@@ -14,7 +14,9 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return Task::paginate(10)->toResourceCollection(TaskResource::class);
+        return Task::paginate(10)->toResourceCollection(
+            resourceClass: TaskResource::class
+        );
     }
 
     /**
@@ -22,9 +24,11 @@ class TaskController extends Controller
      */
     public function store(StoreTaskRequest $request)
     {
-        return new TaskResource(
-            resource: $request->validated()
-        );
+        $task = Task::query()->create($request->validated());
+
+        return (new TaskResource($task))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**

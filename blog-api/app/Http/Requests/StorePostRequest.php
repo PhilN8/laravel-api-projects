@@ -22,7 +22,11 @@ class StorePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'user_id' => 'int|exists:users,id|required',
+            'category_id' => 'int|exists:categories,id|required',
+            'title' => 'required|string|min:3|max:255',
+            'content' => 'required|string|min:3',
+            'published_at' => 'nullable'
         ];
     }
 }

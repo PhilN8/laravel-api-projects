@@ -6,6 +6,8 @@ use App\Models\Task;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Http\Resources\TaskResource;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller
 {
@@ -34,9 +36,17 @@ class TaskController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Task $task)
+    public function show(int $id)
     {
-        return new TaskResource($task);
+        try {
+            return new TaskResource(
+                resource: Task::query()->findOrFail($id)
+            );
+        } catch (ModelNotFoundException) {
+            return response()->json([
+                'message' => 'Task not found'
+            ], 404);
+        }
     }
 
     /**
